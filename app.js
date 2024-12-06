@@ -1,4 +1,4 @@
-let dataId = 10;
+let dataId = 2;
 
 fetchData(dataId);
 
@@ -10,18 +10,37 @@ async function fetchData(id) {
             throw new Error('response was not ok');
         }
         const data = await response.json();
-        for(let item of data) {
-            if(item.id == id ){
+        let item = data.find(item => item.id === id)
+            if(item){
                 for(let [key, value] of Object.entries(item)){
                     console.log(key + " : " + value);
                 }
-                return;
-            }else{
+                if(item.address){
+                    console.log('Address:');
+                    for(let[key, value] of Object.entries(item.address)){
+                        console.log(key + " : " + value);
+                    }
+                    if(item.address.geo){
+                        console.log('Geo Coordinates:');
+                        for(let[key, value] of Object.entries(item.address.geo)){
+                            console.log(key + " : " + value);
+                        }
+                    }
+                }
+                if(item.company){
+                    console.log('Company:');
+                    for(let[key, value] of Object.entries(item.company)){
+                        console.log(key + " : " + value);
+                    }
+                }
+            }
+            else{
                 console.log("data not found");
             }
-        }
+        
     }
     catch(error){
         console.error('There was a problem with the fetch operation:', error);
     }
 }
+
