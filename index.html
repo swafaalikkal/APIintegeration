@@ -8,9 +8,13 @@
 </head>
 <body>
     <div class="container mt-3">
-        <div class="card mx-5">
+        <div class="d-none d-flex justify-content-center" id="loading">
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            </div>
+        </div>
+        <div class="card mx-5" id="card-container">
             <div class="card-body">
-                <h4 class="card-title">User Details</h4>
+                <h4 class="card-title text-center">User Details</h4>
                 <p class="card-text" id="user-details"></p>
             </div>
         </div>
