@@ -1,57 +1,48 @@
+
 const userDetails = document.getElementById("user-details");
 const loading = document.getElementById("loading");
 const cardContainer = document.getElementById("card-container");
-loading.classList.remove("d-none");
+
 cardContainer.classList.add("d-none");
 
-window.addEventListener("load", () => setTimeout(fetchData,5000));
+window.addEventListener("load", () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const userId = searchParams.get("id");
+    if(userId) {
+        fetchData(userId);
+    }
+    else{
+        userDetails.innerHTML = `<p class="text-danger">user not found</p>`;
+    }
+});
 
-async function fetchData() {
-    loading.classList.remove("d-flex");
-    loading.classList.add("d-none");
+async function fetchData(userId) {
     try{
-        const response = await fetch(`${ENV.BASE_URL}/users/2`);
+        const response = await fetch(`${ENV.BASE_URL}/${userId}`);
         if(!response.ok){
-            throw new Error('response was not ok');
+            throw new Error(`response was not ok. ${error.message}`);
         }
 
         const data = await response.json();
-        if(data){
-            for(let [key, value] of Object.entries(data)){
-                console.log(`${key} : ${value}`);
+        setTimeout(() => {
+            if(data){
+                displayUserDetails(data);
             }
-            if(data.address){
-                console.log('Address:');
-                for(let[key, value] of Object.entries(data.address)){
-                    console.log(`${key} : ${value}`);
-                }
-                if(data.address.geo){
-                    console.log("Geo Coordinates:");
-                    for(let[key, value] of Object.entries(data.address.geo)){
-                        console.log(`${key} : ${value}`);
-                    }
-                }
+            else{
+                hideLoading();
+                userDetails.innerHTML = `<p class="text-danger">data not found</p>`;
             }
-            if(data.company){
-                console.log('Company:');
-                for(let[key, value] of Object.entries(data.company)){
-                    console.log(`${key} : ${value}`);
-                }
-            }
-            displayUserDetails(data);
-        }
-        else{
-            console.log("data not found");
-        }
-        
+        },5000);
     }
     catch(error){
+        hideLoading();
         console.error('There was a problem with the fetch operation:', error);
+        userDetails.innerHTML = `<p class="text-danger text-center" >Error: Data not found. Please try again</p>`;
     }
 }
 
 function displayUserDetails(data) {
-    cardContainer.classList.remove("d-none");
+    hideLoading();
 
     const userInfo = `
         <ul class="list-group  list-group-flush">
@@ -86,4 +77,11 @@ function displayUserDetails(data) {
     `;
 
     userDetails.innerHTML = userInfo;
+}
+
+function hideLoading() {
+    loading.classList.remove("d-flex");
+    loading.classList.add("d-none");
+    cardContainer.classList.remove("d-none");
+
 }
