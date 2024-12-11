@@ -24,15 +24,11 @@ async function fetchData(userId) {
         }
 
         const data = await response.json();
-        setTimeout(() => {
-            if(data){
-                displayUserDetails(data);
-            }
-            else{
-                hideLoading();
-                userDetails.innerHTML = `<p class="text-danger">data not found</p>`;
-            }
-        },5000);
+
+        if(data){
+            displayUserDetails(data);
+        }
+
     }
     catch(error){
         hideLoading();
